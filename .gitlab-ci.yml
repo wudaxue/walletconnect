@@ -1,0 +1,46 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - pnpm install
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+
+build:
+  stage: build
+  tags:
+    - node_runner
+  script:
+    - pnpm build
+  artifacts:
+    paths:
+      - dist
+
+deploy:
+  variables:
+    ONLINE_UNIFIED_CONF_DIR: "/etc/gitlab-deploy/online_unified_config"
+  stage: deploy
+  tags:
+    - deploy
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+  before_script:
+    - echo ""
+  only:
+    - dev
+    - test
+    - pre-production
+    - tags
+  script:
+    - gitlab-deploy -v 8
+  artifacts:
+    paths:
+      - .target
+  except:
+    variables:
+      - $CI_COMMIT_TAG =~ /.*skip-ci/
+
