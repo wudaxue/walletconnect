@@ -1,6 +1,5 @@
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
-import { Web3Modal } from '@web3modal/react'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig } from 'wagmi'
 import { arbitrum, mainnet, polygon } from 'wagmi/chains'
 
 const chains = [arbitrum, mainnet, polygon]
@@ -13,8 +12,5 @@ const wagmiConfig = createConfig({
   publicClient,
 })
 const ethereumClient = new EthereumClient(wagmiConfig, chains)
-const home = () => {
-  return <>33</>
-}
 
-export default home
+export default { wagmiConfig, ethereumClient }
