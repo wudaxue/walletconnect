@@ -1,16 +1,38 @@
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
+import { EthereumClient, w3mProvider } from '@web3modal/ethereum'
 import { configureChains, createConfig } from 'wagmi'
-import { arbitrum, mainnet, polygon } from 'wagmi/chains'
+import { arbitrum, optimism, mainnet, polygon } from 'wagmi/chains'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
-const chains = [arbitrum, mainnet, polygon]
-const projectId = 'YOUR_PROJECT_ID'
+const chains = [arbitrum, mainnet, polygon, optimism]
+const projectId = '1f3490ab876707864073d7c68d829354'
 
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
+const connectors = [
+  new MetaMaskConnector(),
+  new WalletConnectConnector({
+    chains,
+    options: {
+      projectId: '1f3490ab876707864073d7c68d829354',
+    },
+  }),
+  new CoinbaseWalletConnector({
+    options: {
+      appName: 'wagmi.sh',
+      jsonRpcUrl: 'https://eth-mainnet.alchemyapi.io/v2/yourAlchemyId',
+    },
+  }),
+]
+
+console.log(connectors, 1111111)
+const { publicClient, webSocketPublicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
+  connectors,
   publicClient,
+  webSocketPublicClient,
 })
+
 const ethereumClient = new EthereumClient(wagmiConfig, chains)
 
-export default { wagmiConfig, ethereumClient }
+export { wagmiConfig, ethereumClient, projectId, connectors }
