@@ -1,20 +1,23 @@
 import { Web3Modal } from '@web3modal/react'
-import { connectors, ethereumClient, projectId } from '../const'
-import { useAccount, useDisconnect, useConnect } from 'wagmi'
-import { useRef, useState } from 'react'
+import { ethereumClient, projectId } from '../const'
+import { useAccount, useDisconnect } from 'wagmi'
+import { useEffect, useState } from 'react'
 import ConnectDialog from './Dialog'
 import './index.scss'
 
 const home = () => {
-  const { address } = useAccount()
   const [connectOpen, setConnectOpen] = useState(false)
+  const { address } = useAccount()
+
+  useEffect(() => {
+    if (address) {
+      closeDialog()
+    }
+  }, [address])
 
   const { disconnect } = useDisconnect()
-
   const toDisconnect = () => disconnect()
-
   const toConnect = () => setConnectOpen(true)
-
   const closeDialog = () => setConnectOpen(false)
 
   return (

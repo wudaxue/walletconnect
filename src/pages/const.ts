@@ -24,7 +24,6 @@ const connectors = [
   }),
 ]
 
-console.log(connectors, 1111111)
 const { publicClient, webSocketPublicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiConfig = createConfig({
   autoConnect: true,

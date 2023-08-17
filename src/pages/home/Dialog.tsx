@@ -1,10 +1,9 @@
 import { useConnect } from 'wagmi'
-import { connectors } from '../const'
 import { MouseEventHandler } from 'react'
+import { Button } from 'antd'
 
 const ConnectDialog = (props: { closeDialog: MouseEventHandler<HTMLImageElement> | undefined }) => {
-  const { connect } = useConnect()
-
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
   const toConnect = async (connector: any) => {
     connect({ connector })
   }
@@ -17,17 +16,19 @@ const ConnectDialog = (props: { closeDialog: MouseEventHandler<HTMLImageElement>
           <img src="./close.png" className="close-btn absolute cursor-pointer" onClickCapture={props.closeDialog} />
         </div>
         {connectors.map((connector) => (
-          <div
+          <Button
             key={connector.name}
             onClickCapture={() => {
               props.closeDialog
               toConnect(connector)
             }}
             className="connector-item flex cursor-pointer items-center justify-center rounded-full border border-[#EEEEEE]"
+            loading={isLoading}
+            disabled={isLoading}
           >
             <img src={`./${connector.id}.png`} className="mr-3" />
             {connector.name}
-          </div>
+          </Button>
         ))}
       </div>
     </div>
